@@ -6,9 +6,7 @@ input[type="search"].search-input::-webkit-search-cancel-button {
 }
 
 #search-area {
-    position: absolute;
-    top: 27%;
-    /*background: #4169E1;*/
+    background: #4169E1;
     height: 71px;
     position: fixed !important;   /* fixed header */
     position: absolute;  /* fixed header */
@@ -148,7 +146,7 @@ input[type="search"].search-input::-webkit-search-cancel-button {
     #landing {
         padding: 50px 0;
         height: auto;
-        background: #fff url(../img/saitama.jpg) no-repeat bottom center;
+        background: #fff url(../img/bg-panel.jpg) no-repeat bottom center;
     }
 }
 
@@ -156,22 +154,22 @@ input[type="search"].search-input::-webkit-search-cancel-button {
     #landing {
         padding: 60px 0;
         height: auto;
-        background: #fff url(../img/saitama.jpg) no-repeat bottom center;
+        background: #fff url(../img/bg-panel.jpg) no-repeat bottom center;
     }
 }
 
 #landing {
-    height: 100%;
-    width: 100%;
-    position: absolute;
+    display: block;
+    position: relative;
+    padding-top: 40px;
     text-align: center;
-    background: #fff url(../img/saitama.jpg) no-repeat bottom center;
-    background-size: cover;
+    background: #fff url(../img/bg-panel.jpg) no-repeat bottom center;
     overflow: hidden;
 }
 
 .card {
-  color: white;
+  background-size: cover;
+  color: black;
   height: 30%;
   width:100%;
   margin-bottom: 10px;
@@ -189,8 +187,7 @@ input[type="search"].search-input::-webkit-search-cancel-button {
 }
 
 .card-desc {
-  font-weight: 700;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 400;
   opacity: 0    
   text-align: center;
