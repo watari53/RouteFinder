@@ -1,0 +1,189 @@
+/* This is a CSS file */
+
+.section {
+    margin-bottom: 35px;
+}
+
+.section-header {
+  margin: 5px 0 10px 15px;
+}
+
+.section-header i {
+  margin-right: 8px;
+  font-size: 24px;
+}
+
+.section-title {
+  font-size: 20px;
+}
+
+.section-data {
+  font-size: 16px;
+  margin-left: 20px;
+}
+
+#detail-carousel {
+  margin-bottom: 8px;    
+}
+    
+#detail-carousel .image-area{
+  background-color: #ddd;
+  width: 230px;
+  height: 230px;
+  margin: 5px;
+  border-radius: 6px;
+}
+
+.detail-carousel-img {
+  width: 230px;
+  height: 230px;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+    bottom: 0px;
+    color: #fff;
+    background: rgba(0,0,0,.6);
+    width: 80%;
+    max-width: 600px;
+    padding: 1em 0;
+}
+
+.absolute p {
+    margin: 0;
+    padding: 0 0.2em;
+    font-size: 18px;
+    text-align: center;
+}
+
+
+/* Map Area */
+#map-img-area {
+    position: relative;
+    width: 100%;
+    height: 150px;
+}
+
+#map-img-area .label {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    color: #fff;
+    background: rgba(0,0,0,.6);
+    width: 100%;
+    padding: 1em 0;
+}
+
+#map-img-area .label p{
+    margin: 0;
+    padding: 0 0.8em;
+}
+
+#map-img-area .show-map-label {
+    position: absolute;
+    right: 8px;
+}
+
+#map-img-area img {
+    width :100%;
+    height: 100%;
+}
+
+/* Google Map */
+#map_canvas{
+    left: 0;
+    right:0;
+    position: absolute;
+    overflow: hidden;
+    height: 100%;
+    width:100%;
+}
+
+/* toggle tab */
+
+.nodisp {
+  display: none;
+}
+
+
+/* spot list */
+
+.plan-list {
+  border-top: none;
+  background-image: none !important;
+  overflow: scroll;
+}
+    
+.plan {
+  line-height: 1;
+  padding: 0;
+}
+
+.plan-left {
+  text-align: right;
+  padding: 10px 10px 10px 0;
+}
+
+.plan-center {
+  background-color: #3399ff;
+  opacity: 0.5;
+}
+
+.plan-right {
+  padding: 8px 12px 8px 18px;
+}
+
+.plan-date {
+  font-size: 14px;
+  opacity: 0.8;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.plan-duration {
+  font-size: 11px;
+  opacity: 0.4;
+}
+
+.plan-genre  {
+  font-size: 24px;
+  opacity: 0.4;
+}
+
+.plan-icon {
+  font-size: 28px;
+}
+
+.plan-name {
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.plan-info {
+  opacity: 0.4;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.spot-img {
+    width: 70px;
+    height: 70px;
+    margin-top: auto;
+	margin-bottom: auto;
+	margin-left: 8px;
+}
+
+.plan-sort-button {
+    font-size: 25px;  
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
+.route-spot-img {
+    height: 80px;
+    width: 80px;
+}

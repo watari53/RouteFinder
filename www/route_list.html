@@ -1,0 +1,76 @@
+<link rel="stylesheet" href="css/route_list.css">
+
+<ons-page id="search-page" ng-controller="RouteListController">
+    <ons-toolbar>
+        <div class="left"><ons-back-button>Back</ons-back-button></div>
+        <div class="center">{{tags}}タグの観光ルート一覧</div>
+    </ons-toolbar>
+
+    <div style="text-align: center">
+
+        <ons-list>
+            
+            <ons-list-item class="list-item-container" ons-lazy-repeat="routeListDelegate" ng-click="showRouteDetail(route.id)">
+              <ons-row>
+                <ons-col>
+                  <div class="name">
+                    {{route.title}}
+                  </div>
+                </ons-col>
+              </ons-row>
+              
+              <ons-row>
+                <ons-col>
+                    <span class="like"><i class="fa fa-thumbs-o-up"></i>{{route.like_count}}</span>
+                    <span class="comment"><i class="fa fa-comment-o"></i> 1</span>
+                </ons-col>
+              </ons-row>
+            
+              <ons-row>
+                <ons-carousel swipeable class="thumb-carousel" overscrollable auto-scroll item-width="140px">
+                    <ons-carousel-item ng-repeat="img in route.picture_list">
+                      <div class="dummy-thumbnail">
+                        <img class="thumbnail" src="{{img}}">
+                      </div>
+                    </ons-carousel-item>
+                </ons-carousel>
+              </ons-row>            
+              
+              <ons-row>            
+                <ons-col>
+                  <div class="location">
+                    <i class="fa fa-map-marker">総距離: </i> {{route.distance | number: 1}} km
+                  </div>
+                </ons-col>
+              </ons-row>              
+              
+              <ons-row>
+                <ons-col>
+                  <div class="time">
+                    <i class="fa fa-clock-o">所要時間: </i> {{route.required_time | number: 1}} h
+                  </div>              
+                </ons-col>
+              </ons-row>
+
+              <ons-row>
+                <ons-col>
+                  <div class="tag">
+                    <i class="fa fa-tags">ジャンル: </i>
+                        <span class="genre notification" ng-repeat="tag in route.tag | limitTo:3">{{tag}}</span>
+                  </div>              
+                </ons-col>
+              </ons-row>
+
+            </ons-list-item>            
+        </ons-list>
+            
+    <br>
+<!--   
+        <ons-button
+            onclick="myNavigator.popPage()">
+          Back
+        </ons-button>
+-->
+
+    </div>
+</ons-page>

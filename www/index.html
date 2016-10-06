@@ -1,0 +1,398 @@
+<!DOCTYPE HTML>
+<html ng-app="routeSearchApp">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <script src="components/loader.js"></script>
+    <link rel="stylesheet" href="components/loader.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <script type="text/javascript" src="js/jquery-ui-1.10.3.js"></script>
+    <script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
+    <!--<script type="text/javascript" src="http://maps.google.com/maps?file=api&v=2&key=AIzaSyBwhntWrRFmsd37_0MDOkBmpC2j15dk87Q&sensor=false"></script>-->
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script src="js/route_detail_map.js"></script>
+    <script>
+        // ons.bootstrap();
+        var app = angular.module('routeSearchApp', ['onsen'])
+        
+        var $host= "http://workshops.ddns.net"
+        var AlbumsArrayKey = {
+                ID: 0,
+                TITLE : 1,
+                IMG_URL : 2,
+                VISITED_DATE : 3,
+                LAT : 4,
+                LNG : 5,
+                ADDRESS : 6
+            };
+        
+        app.factory('SharedMethod', function(){
+            var sharedMethod = {};
+            
+            sharedMethod.showModal = function() {
+                connectingModal.show();
+                setTimeout('connectingModal.hide()', 2000);
+            }
+
+            sharedMethod.hideModal = function() {
+                connectingModal.hide();
+            }
+
+            sharedMethod.showRouteDetail = function(route_id) {
+                console.log("show route detail: id=" + route_id);
+                myNavigator.pushPage('route_detail.html', {route_id: route_id});
+            };
+            
+            sharedMethod.reverseGeocode = function(lat, lng) {
+                request_reverse_geocode= "http://nominatim.openstreetmap.org/reverse?format=json&lat=" + lat + "&" + "lon=" + lng + "&zoom=18&addressdetails=1";
+                $.ajax({
+                    url: request_reverse_geocode,
+                    type: "GET",
+                    dataType: "json",
+                    async: false,
+                    success: function(data) {
+                        console.log("success reverse geocode");
+                        return data;
+                    },
+                    error: function(data) {
+                        alert("電波がいいところで試してください");
+                        connectingModal.hide();
+                    }                    
+                }); 
+            }
+
+            sharedMethod.onError = function (positionError) {
+                /* onError()関数の記述 */
+                var code = positionError.code;
+                switch(code) {
+                    case 1:
+                        errorMessage = '位置情報の取得がユーザーによって許可されていません。';
+                        break;
+                    case 2:
+                        errorMessage = '位置情報の取得が行えません。';
+                        break;
+                    case 3:
+                        errorMessage = '時間切れです。位置情報が利用できない可能性があります。';
+                        break;    
+                    default:
+                        errorMessage = 'エラーが発生しました。' + code;
+                }
+                ons.notification.alert({ message: errorMessage });
+            };
+            
+            return sharedMethod;
+        });
+
+        app.controller('SearchController', function($scope, $http, SharedMethod){
+            /* favorite tag data */ 
+            $http.get("sample_data.json").then(function(response){
+                $scope.tagData = response.data.tagData;                
+            });
+            
+            $scope.showRouteDetail = function(route_id) {
+                SharedMethod.showModal();
+                SharedMethod.showRouteDetail(route_id);
+            }
+            
+            $scope.search = function(keyword){
+                SharedMethod.showModal();
+                keyword = $("#key-search").val()
+                console.log("show-modal &&& keyword:  " + keyword);
+                myNavigator.pushPage('route_list.html', {selected_tags: keyword});
+            }
+            
+            $scope.click_search = function(scene){
+                SharedMethod.showModal();
+                myNavigator.pushPage('route_list.html', {selected_tags: scene});
+            }    
+        })
+        .controller('RouteListController', function($scope, $http, SharedMethod) {
+            console.log("in route list page");
+            var options = $scope.myNavigator.getCurrentPage().options;
+            var selected_tags= options.selected_tags;
+            console.log(selected_tags);
+            var routeList = [];
+    
+            /* get sample route data
+            $http.get("sample_data.json").then(function(response){
+                routeList.push(response.data.routeData);
+                $scope.routeList = routeList;
+            }); */   
+            
+            var get_routes_url= $host + "/api/v1/routes/index?tags=" + selected_tags;
+            console.log("route list url: " + get_routes_url);
+            $.ajax({
+                url: get_routes_url,
+                type: "GET",
+                dataType: "json",
+                async: false,
+                success: function(data) {
+                    console.log("success get route index");
+                    for(var i=0; i < data.length; i++) {
+                        routeList.push(data[i]);
+                    }
+                },
+                error: function(data) {
+                    alert("電波がいいところで試してください");
+                    connectingModal.hide();
+                }
+            });            
+            console.log("route num is: " + routeList.length);
+            
+            $scope.routeListDelegate = {
+              countItems: function() {
+                // Return number of items.
+                return routeList.length;
+              },
+        
+              calculateItemHeight: function(index) {
+                // Return the height of an item in pixels.
+                return 280;
+              },
+        
+              configureItemScope: function(index, itemScope) {
+                // console.log("initialize scope route title: " + routeList[index].title);
+                // Initialize scope
+                itemScope.route= routeList[index];
+                
+              },
+        
+              destroyItemScope: function(index, itemScope) {
+                // Optional method that is called when an item is unloaded.
+                console.log('Destroyed item with index: ' + index);
+              }
+            };
+            $scope.tags= selected_tags;
+        
+            // push page to route detail page
+            $scope.showRouteDetail = function(route_id) {
+                SharedMethod.showModal();
+                SharedMethod.showRouteDetail(route_id); 
+            };
+        })
+        .controller('RouteDetailController', function($scope, $http, SharedMethod) {
+            // picture list srray number
+            $scope.AlbumsArrayKey = AlbumsArrayKey;
+            var options = $scope.myNavigator.getCurrentPage().options;
+            var route_id = options.route_id;
+            var related_routeList = [];
+
+            /* read route detail data
+            $http.get("sample_data.json").then(function(response){
+                $scope.DetailData= response.data.routeDetail;                
+            });
+            */
+            var get_routes_detail_url = $host + "/api/v1/routes/show?id=" + route_id;
+            console.log("route detail url : " + get_routes_detail_url);
+            $.ajax({
+                url: get_routes_detail_url,
+                type: "GET",
+                dataType: "json",
+                async: false,
+                success: function(data) {
+                    console.log(data);
+                    $scope.DetailData = data;
+                },
+                error: function(data) {
+                    alert("電波がいいところで試してください");
+                }
+            });
+
+            //initialize sortable TimeLine
+            console.log("initialize timeline")
+            $('#sortable_timeline').sortable({
+                handle: 'span',
+                opacity: 0.7,
+                placeholder: 'ui-state-highlight'
+            });
+
+            //initialize google map
+            console.log("map initialize");
+            var map;
+            $(function() {
+                $('#map_tab').one('click', function () {
+                    console.log("click");
+                    connectingModal.show();
+                    console.log(1);
+                    $("#map-img").addClass('nodisp');
+                    $("#map-area").removeClass('nodisp');                        
+                    createMap();
+                    createRoute($scope.DetailData.album_list);
+                });
+            });
+
+            /* get related route data
+            $http.get("sample_data.json").then(function(response){
+                related_routeList.push(response.data.routeData);
+            });
+            */
+            var get_related_routes_url= $host + "/api/v1/routes/related?route_id=" + $scope.DetailData.id;
+            $.ajax({
+                url: get_related_routes_url,
+                type: "GET",
+                dataType: "json",
+                async: false,
+                success: function(data) {
+                    console.log("success get route index");
+                    for(var i=0; i < data.length; i++) {
+                        related_routeList.push(data[i]);
+                    }
+                },
+                error: function(data) {
+                    alert("電波がいいところで試してください");
+                    connectingModal.hide();
+                }
+            });
+            $scope.related_routeList = related_routeList;
+
+            $scope.showRouteDetail = function(route_id) {
+                SharedMethod.showModal();
+                SharedMethod.showRouteDetail(route_id); 
+            };
+    
+            $scope.showPictureDetail = function(album_id) {
+                SharedMethod.showModal();
+                console.log("show album detail");
+                console.log("album_id: " + album_id);
+                myNavigator.pushPage('picture_detail.html', {album_id: album_id});
+            } 
+
+        })
+        .controller('PictureDetailController', function($scope, $http, SharedMethod) {
+            console.log("picture detail controller");
+            var options = $scope.myNavigator.getCurrentPage().options;
+            var album_id = options.album_id;            
+            
+            // get picture detail data
+            // $http.get("sample_data.json").then(function(response){
+            //     $scope.pictureData = response.data.picture;
+            // });
+            var get_picture_detail_url = $host + "/api/v1/albums/show?id=" + album_id;
+            console.log("get picture detail url: url=" + get_picture_detail_url);
+            $.ajax({
+                url: get_picture_detail_url,
+                type: "GET",
+                dataType: "json",
+                async: false,
+                success: function(data) {
+                    console.log(data.title + ": id=" + data.album_id);
+                    $scope.pictureData = data;
+                },
+                error: function(data) {
+                    alert("電波がいいところで試してください");
+                }
+            });
+
+            $(function() {
+                //コンテンツの切り替え
+                $("#picture-menu-tab ons-col").click(function() {
+                    var num = $("#picture-menu-tab ons-col").index(this);
+                    console.log("tab num="+num);   
+                    $(".p-content_wrap").addClass('nodisp');
+                    $(".p-content_wrap").eq(num).removeClass('nodisp');
+                    $("#picture-menu-tab ons-col").removeClass('selected');
+                    $(this).addClass('selected')
+                });
+                
+                //関連写真の取得
+                var related_pictures = [];
+                /* $http.get("sample_data.json").then(function(response){
+                    related_pictures = response.data.related_pictures;
+                    $scope.related_pictures = related_pictures;
+                }); */
+                var get_related_pictures_url = $host + "/api/v1/pictures/search?album_id=" + $scope.pictureData.album_id;
+                console.log("get related picture: url=" + get_related_pictures_url);
+                $.ajax({
+                    url: get_related_pictures_url,
+                    type: "GET",
+                    dataType: "json",
+                    async: false,
+                    success: function(data) {
+                        for (var i=0; i < data.length; i++) {
+                            related_pictures.push(data[i]);
+                        }
+                    },
+                    error: function(data) {
+                        alert("電波がいいところで試してください");
+                    }
+                });
+                $scope.related_pictures_length = related_pictures.length;
+                $('#related-images').one('click', function() {
+                    $scope.related_pictures = related_pictures;
+                    $scope.$apply();
+                });
+                
+                var related_routes = [];
+                // $http.get("sample_data.json").then(function(response){
+                //     $scope.related_pictures = response.data.routeData;
+                // });
+                var get_related_routes_url = $host + "/api/v1/routes/related?album_id=" + album_id;
+                console.log("get related route: url=" + get_related_routes_url);
+                $.ajax({
+                    url: get_related_routes_url,
+                    type: "GET",
+                    dataType: "json",
+                    async: false,
+                    success: function(data) {
+                        for (var i=0; i < data.length; i++) {
+                            related_routes.push(data[i]);
+                        }
+                    },
+                    error: function(data) {
+                        alert("電波がいいところで試してください");
+                    }
+                });
+                $scope.related_routes_length = related_routes.length;
+                $('#related-routes').one('click', function() {
+                    $scope.related_routes= related_routes;
+                    $scope.$apply();                    
+                });
+                // push page to route detail page
+                $scope.showRouteDetail = function(route_id) {
+                    SharedMethod.showModal();
+                    console.log("show route detail: route_id: " + route_id);
+                    SharedMethod.showRouteDetail(route_id); 
+                };                
+
+            
+                var user_comments = [];
+                var get_user_comments_url = $host + '/api/v1/albums/get_comments?album_id=' + album_id;
+                console.log('get users comments this place: url=' + get_user_comments_url);
+                $.ajax({
+                    url: get_user_comments_url,
+                    type: "GET",
+                    dataType: "json",
+                    async: false,
+                    success: function(data) {
+                        for (var i=0; i < data.length; i++) {
+                            user_comments.push(data[i]);
+                        }
+                    },
+                    error: function(data) {
+                        alert("電波がいいところで試してください");
+                    }
+                });
+                $scope.user_comments_length = user_comments.length;
+                
+                $('#user-comments').one('click', function() {
+                    $scope.user_comments = user_comments;
+                    $scope.$apply();
+                });
+            });
+        });        
+        
+    </script>
+    
+</head>
+<body>
+    <ons-modal id="search-connecting-modal" var="connectingModal">
+        <ons-icon icon="ion-load-c" spin="true"></ons-icon><br>
+        connecting…
+    </ons-modal>
+    
+    <ons-navigator var="myNavigator" page="search_page.html">
+    </ons-navigator> 
+</body>
+</html>

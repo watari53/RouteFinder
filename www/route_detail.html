@@ -1,0 +1,149 @@
+<link rel="stylesheet" href="css/route_detail.css">
+
+<ons-modal var="myModal">
+    情報を取得中…
+</ons-modal>
+
+<ons-page ng-controller='RouteDetailController'>
+    <ons-toolbar>
+        <div class="left"><ons-back-button>Back</ons-back-button></div>
+        <div class="center">ルート詳細</div>
+    </ons-toolbar>
+
+    <div class="section">
+        <div class="section-header">
+            <i class="ion-images"></i><span class="section-title">スポット</span>
+        </div>
+
+        <ons-carousel id="detail-carousel" swipeable style="height: 240px;" overscrollable auto-scroll item-width="240px">
+            <ons-carousel-item ng-repeat="album in DetailData.album_list" ng-click="showPictureDetail(album[AlbumsArrayKey.ID])">
+              <figure class="relative">
+                  <img class="detail-carousel-img" src="{{album[AlbumsArrayKey.IMG_URL]}}">
+                  <figcaption class="absolute"><p>{{album[AlbumsArrayKey.TITLE]}}</p></figcaption>
+              </figure>
+              <div class="img-area">
+                <i class="fa ion-ios-flag-outline"></i>{{album[AlbumsArrayKey.TITLE]}}
+             </div>
+            </ons-carousel-item>
+        </ons-carousel>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <i class="ion-android-pin"></i><span class="section-title">ルート</span><span class="section-data">総距離: {{DetailData.distance | number:1}} km</span>
+        </div>
+        
+        <div id="map-img-area">
+            <div id="map-img" class="content_wrap">
+                <img style="height: 150px;" src="img/map_img.jpg">
+                <figcaption class="label"> <p>
+                    <i class="fa fa-map-marker"></i> {{DetailData.title}} <span id="map_tab" class="show-map-label"><u>地図を表示する</u></span>
+                </p> </figcaption>
+            </div>
+            <div id="map-area" class="content_wrap nodisp">
+                <div id="map_canvas"></div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="section">
+        <div class="section-header">
+            <i class="ion-clock"></i><span class="section-title">タイムテーブル</span><span class="section-data">所要時間: {{DetailData.required_time| number:1}} h</span>
+        </div>
+            <ons-list id="sortable_timeline" class="plan-list">
+              <ons-list-item  class="plan" modifier="chevron" ng-repeat="album in DetailData.album_list" ng-click="showPictureDetail(album[AlbumsArrayKey.ID])">
+                <ons-row>
+                  <ons-col width="80px" class="plan-left">
+                    <div class="plan-date">{{album[AlbumsArrayKey.VISITED_DATE]}}</div>
+                    <!--<div class="plan-duration">1h</div>-->
+                    <!--<div class="plan-genre"><span class="ion-camera"></span></div>-->
+                  </ons-col>
+    
+                  <ons-col width="6px" class="plan-center" ng-style="{backgroundColor:picture.id % 3 == 1 ? '#3399ff' : '#ccc'}">
+                  </ons-col>
+    
+                  <ons-col class="plan-right">
+                    <div class="plan-name">{{album[AlbumsArrayKey.TITLE]}}</div>
+    
+                    <div class="plan-info">
+                      <div>
+                        <ons-icon icon="fa-map-marker"></ons-icon>{{album[AlbumsArrayKey.ADDRESS]}}
+                      </div>
+                    </div>
+                  </ons-col>
+
+                  <ons-col width="80px" class="handle">
+                    <img class="route-spot-img" src="{{album[AlbumsArrayKey.IMG_URL]}}">
+                  </ons-col>
+                  
+                  <ons-col width="35px" class="handle">
+                  </ons-col>
+                  
+                </ons-row>
+              </ons-list-item>
+            </ons-list>
+    </div>
+
+    <div class="section">
+        <div class="section-header">
+            <i class="ion-map"></i><span class="section-title">関連ルート</span>
+        </div>
+        <ons-list>
+            <ons-list-item class="list-item-container" ng-repeat="route in related_routeList | limitTo:3" ng-click="showRouteDetail(route.id)">
+              <ons-row>
+                <ons-col>
+                  <div class="name">
+                    {{route.title}}
+                  </div>
+                </ons-col>
+              </ons-row>
+              
+              <ons-row>
+                <ons-col>
+                    <span class="like"><i class="fa fa-thumbs-o-up"></i>{{route.like_count}}</span>
+                    <span class="comment"><i class="fa fa-comment-o"></i> 1</span>
+                </ons-col>
+              </ons-row>
+            
+              <ons-row>
+                <ons-carousel swipeable class="thumb-carousel" overscrollable auto-scroll item-width="140px">
+                    <ons-carousel-item ng-repeat="img in route.picture_list">
+                      <div class="dummy-thumbnail">
+                        <img class="thumbnail" src="{{img}}">
+                      </div>
+                    </ons-carousel-item>
+                </ons-carousel>
+              </ons-row>            
+              
+              <ons-row>            
+                <ons-col>
+                  <div class="location">
+                    <i class="fa fa-map-marker">総距離: </i> {{route.distance | number: 1}} km
+                  </div>
+                </ons-col>
+              </ons-row>              
+              
+              <ons-row>
+                <ons-col>
+                  <div class="time">
+                    <i class="fa fa-clock-o">所要時間: </i> {{route.required_time | number: 1}} h
+                  </div>              
+                </ons-col>
+              </ons-row>
+
+              <ons-row>
+                <ons-col>
+                  <div class="tag">
+                    <i class="fa fa-tags">ジャンル: </i>
+                        <span class="genre notification" ng-repeat="tag in route.tag | limitTo: 3">{{tag}}</span>
+                  </div>              
+                </ons-col>
+              </ons-row>
+            
+            </ons-list-item>            
+        </ons-list>
+    
+    </div>
+    <button class="button--large--quiet">もっと見る</button>
+
+</ons-page>

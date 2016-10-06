@@ -1,0 +1,175 @@
+<link rel="stylesheet" href="css/picture_detail.css">
+
+<ons-page ng-controller='PictureDetailController'>
+
+    <ons-toolbar>
+        <div class="left"><ons-back-button>Back</ons-back-button></div>
+        <div class="center">{{pictureData.title}}</div>
+    </ons-toolbar>
+
+        <img class="card" src="{{pictureData.img_url}}">
+        <div class="rating"><div class="rating-num">
+            <ons-icon icon="fa-star" fixed-width="false"></ons-icon>
+            <ons-icon icon="fa-star" fixed-width="false"></ons-icon>
+            <ons-icon icon="fa-star" fixed-width="false"></ons-icon>
+            <ons-icon icon="fa-star" fixed-width="false"></ons-icon>
+            <ons-icon icon="fa-star-half" fixed-width="false"></ons-icon>
+            4.5
+        </div></div>
+
+        <ons-list id="picture-menu-tab" style="border-top: none"><ons-list-item style="line-height: 1; padding: 0;">
+          <ons-row class="action">
+
+            <ons-col class="action-col selected">
+              <div class="action-icon"><ons-icon icon="ion-document-text"></ons-icon></div>
+              <div class="action-label">Data</div>
+            </ons-col>
+
+            <ons-col id="related-images" class="action-col">
+              <div class="action-icon"><span class="notification" style="position: absolute; left:27%; top:5;">{{related_pictures_length}}</span><ons-icon icon="ion-images"></ons-icon></div>
+              <div class="action-label">Photos</div>
+            </ons-col>
+            
+            <ons-col id="related-routes" class="action-col">
+              <div class="action-icon"><span class="notification" style="position: absolute; left:52%; top:5;">{{related_routes_length}}</span><ons-icon icon="ion-map"></ons-icon></div>
+              <div class="action-label">Related</div>
+            </ons-col>
+
+            <ons-col id="user-comments" class="action-col">
+              <div class="action-icon"><span class="notification" style="position: absolute; left:77%; top:5;">{{user_comments_length}}</span><ons-icon icon="ion-android-textsms"></ons-icon></div>
+              <div class="action-label">Comments</div>
+            </ons-col>
+
+          </ons-row>
+        </ons-list>
+
+        <div id="data-area" class="p-content_wrap">
+    
+            <ons-list>
+              <ons-list-item modifier="chevron">
+                <div class="prop-desc">
+                  <ons-icon icon="ion-calendar"></ons-icon>
+                  {{pictureData.date}}
+                </div>
+              </ons-list-item>
+    
+              <ons-list-item modifier="chevron">
+                <div class="prop-desc">
+                  <ons-icon icon="fa-map-marker"></ons-icon>
+                  {{pictureData.address_full_text}}
+                </div>
+              </ons-list-item>
+
+              <ons-list-item modifier="chevron">
+                <div class="prop-desc">
+                  <ons-icon icon="fa-book"></ons-icon>
+                  {{pictureData.description}}
+                </div>
+              </ons-list-item>
+            </ons-list>
+        </div>
+
+        <div id="related-images-area" class="p-content_wrap nodisp">
+            <div class="responsive" ng-repeat="picture in related_pictures| limitTo: 40">
+              <div class="img">
+                <a target="_blank" href="">
+                  <img src="{{picture.img_url}}" alt="Trolltunga Norway" width="300" height="200">
+                </a>
+                <div class="desc"><span class="label ion-android-calendar"></span>{{picture.date}}</div>
+              </div>
+            </div>
+            <button class="button--large--quiet">もっと見る</button>
+        </div>
+    
+    
+        <div id="related-routes-area" class="p-content_wrap nodisp">
+            <ons-list>
+                <ons-list-item class="list-item-container" ng-repeat="route in related_routes | limitTo:7" ng-click="showRouteDetail(route.id)">
+                
+                  <ons-row>
+                    <ons-col>
+                      <div class="name">
+                        {{route.title}}
+                      </div>
+                    </ons-col>
+                  </ons-row>
+                  
+                  <ons-row>
+                    <ons-col>
+                        <span class="like"><i class="fa fa-thumbs-o-up"></i>{{route.like_count}}</span>
+                        <span class="comment"><i class="fa fa-comment-o"></i> 1</span>
+                    </ons-col>
+                  </ons-row>
+                
+                  <ons-row>
+                    <ons-carousel swipeable class="thumb-carousel" overscrollable auto-scroll item-width="140px">
+                        <ons-carousel-item ng-repeat="img in route.picture_list">
+                          <div class="dummy-thumbnail">
+                            <img class="thumbnail" src="{{img}}">
+                          </div>
+                        </ons-carousel-item>
+                    </ons-carousel>
+                  </ons-row>            
+                  
+                  <ons-row>            
+                    <ons-col>
+                      <div class="location">
+                        <i class="fa fa-map-marker">総距離: </i> {{route.distance | number: 1}} km
+                      </div>
+                    </ons-col>
+                  </ons-row>              
+                  
+                  <ons-row>
+                    <ons-col>
+                      <div class="time">
+                        <i class="fa fa-clock-o">所要時間: </i> {{route.required_time | number: 1}} h
+                      </div>              
+                    </ons-col>
+                  </ons-row>
+    
+                  <ons-row>
+                    <ons-col>
+                      <div class="tag">
+                        <i class="fa fa-tags">ジャンル: </i>
+                        <span class="genre notification" ng-repeat="tag in route.tag | limitTo: 3">{{tag}}</span>
+                      </div>              
+                    </ons-col>
+                  </ons-row>
+    
+                </ons-list-item>            
+            </ons-list>
+            <button class="button--large--quiet">もっと見る</button>
+        </div>
+        
+
+        <div id="comments-area" class="p-content_wrap nodisp">
+            <ons-list class="timeline" modifier="inset">
+            
+              <ons-list-item class="timeline-li" modifier="tappable" ng-repeat="comment in user_comments | limitTo: 30">
+                <ons-row>
+                  <ons-col width="50px">
+                    <img ng-src="{{comment.profile_img}}" class="timeline-image">
+                  </ons-col>
+    
+                  <ons-col>
+                    <div class="timeline-date">{{comment.date}}</div>
+                    <div class="timline-from">
+                      <span class="timeline-name">{{comment.name}}</span>
+                      <a href={{comment.link}} style="color:#0000ff;text-decoration:none;">
+                          <span class="timeline-id">@{{comment.full_name}}</span>
+                      </a>
+                    </div>
+    
+                    <div class="timeline-message">
+                      {{comment.comment}}
+                    </div>
+                  </ons-col>
+                </ons-row>
+              </ons-list-item>
+              
+            </ons-list>
+            <button class="button--large--quiet">もっと見る</button>
+        </div>
+    
+
+</ons-page>

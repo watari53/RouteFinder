@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="css/search_page.css">
+<link rel="stylesheet" href="css/route_list.css">
+
+<ons-page ng-controller='SearchController'>
+
+    <div id="search-area" class="navigation-bar navigation-bar--transparent">
+        <form id="route-finder-box" ng-submit="search()">
+            <input type="search" value="" placeholder="キーワード検索" id="key-search" class="search-input">
+        </form>
+    </div>
+    
+    <div id="landing">
+        <div class="card">
+            <div class="card-name">Route Finder</div>
+            <div class="card-desc" style="margin-top: 10px;">埼玉県観光ルート検索</div>
+        </div>
+    </div>
+        
+
+</ons-page>

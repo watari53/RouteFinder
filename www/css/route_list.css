@@ -1,0 +1,93 @@
+/* This is a CSS file */
+
+.list-item-container {
+  line-height: 1;
+  padding: 15px 0px 15px 15px;
+}
+
+.dummy-thumbnail {
+  background-color: #ccc;
+  width: 130px;
+  height: 130px;
+  margin: 5px;
+  border-radius: 6px;
+}
+
+.thumb-carousel {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  height: 140px;
+}
+
+.thumbnail {
+  width: 130px;
+  height: 130px;
+  border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+.name {
+  font-weight: 500;
+  line-height: 16px;
+  font-size: 15px;
+  margin-bottom: 6px;
+  text-align: left;
+}
+
+.like,.comment {
+    margin-right: 5px;
+}
+.like,.comment, .location,.time,.tag {
+  font-size: 14px;
+  opacity: 0.4;
+  margin-bottom: 6px;
+}
+
+.desc {
+  line-height: 1.2;
+  font-size: 13px;
+}
+
+.genre {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: none;
+  line-height: normal;
+  font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 17px;
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: none;
+  padding: 0 4px;
+  width: auto;
+  height: 19px;
+  -webkit-border-radius: 19px;
+  border-radius: 19px;
+  background-color: #918582;
+  color: #fff;
+  text-align: center;
+  font-size: 14px;
+  min-width: 19px;
+  line-height: 19px;
+  font-weight: 400;
+}
