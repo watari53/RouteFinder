@@ -16,7 +16,7 @@
         </div>
 
         <ons-carousel id="detail-carousel" swipeable style="height: 240px;" overscrollable auto-scroll item-width="240px">
-            <ons-carousel-item ng-repeat="album in DetailData.album_list" ng-click="showPictureDetail(album[AlbumsArrayKey.ID])">
+            <ons-carousel-item ng-repeat="album in DetailData.album_list" ng-click="showAlbumDetail(album[AlbumsArrayKey.ID])">
               <figure class="relative">
                   <img class="detail-carousel-img" src="{{album[AlbumsArrayKey.IMG_URL]}}">
                   <figcaption class="absolute"><p>{{album[AlbumsArrayKey.TITLE]}}</p></figcaption>
@@ -33,15 +33,15 @@
             <i class="ion-android-pin"></i><span class="section-title">ルート</span><span class="section-data">総距離: {{DetailData.distance | number:1}} km</span>
         </div>
         
-        <div id="map-img-area">
-            <div id="map-img" class="content_wrap">
+        <div class="map-img-area">
+            <div class="map-img content_wrap">
                 <img style="height: 150px;" src="img/map_img.jpg">
                 <figcaption class="label"> <p>
-                    <i class="fa fa-map-marker"></i> {{DetailData.title}} <span id="map_tab" class="show-map-label"><u>地図を表示する</u></span>
+                    <i class="fa fa-map-marker"></i> {{DetailData.title}} <span ng-click="initMap()" class="show-map-label"><u>地図を表示する</u></span>
                 </p> </figcaption>
             </div>
-            <div id="map-area" class="content_wrap nodisp">
-                <div id="map_canvas"></div>
+            <div class="map-area content_wrap nodisp">
+                <div id="{{canvas_id}}" class="map_canvas"></div>
             </div>
         </div>
     </div>
@@ -51,7 +51,7 @@
             <i class="ion-clock"></i><span class="section-title">タイムテーブル</span><span class="section-data">所要時間: {{DetailData.required_time| number:1}} h</span>
         </div>
             <ons-list id="sortable_timeline" class="plan-list">
-              <ons-list-item  class="plan" modifier="chevron" ng-repeat="album in DetailData.album_list" ng-click="showPictureDetail(album[AlbumsArrayKey.ID])">
+              <ons-list-item  class="plan" modifier="chevron" ng-repeat="album in DetailData.album_list" ng-click="showAlbumDetail(album[AlbumsArrayKey.ID])">
                 <ons-row>
                   <ons-col width="80px" class="plan-left">
                     <div class="plan-date">{{album[AlbumsArrayKey.VISITED_DATE]}}</div>

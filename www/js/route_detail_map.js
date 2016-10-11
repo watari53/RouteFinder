@@ -2,8 +2,9 @@
 
 console.log("route detail map js");
 
-    function createMap() {
+    function createMap(canvas_id) {
         console.log(2);
+        var canvas_id = "#" + canvas_id;
         /* createMap()関数の記述 */ 
         /* 東京都の座標を指定 */
         var latlng = new google.maps.LatLng(35.681382,139.766084);
@@ -15,7 +16,7 @@ console.log("route detail map js");
         };
         console.log(3);
         // 地図を作成
-        map = new google.maps.Map($('#map_canvas')[0], mapOption);
+        map = new google.maps.Map($(canvas_id)[0], mapOption);
         console.log(4);
         
         google.maps.event.addListener(map, "tilesloaded", function() {

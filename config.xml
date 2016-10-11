@@ -38,8 +38,6 @@
   <preference name="Orientation" value="default"/>
   <preference name="SplashScreenDelay" value="1000"/>
   <preference name="Fullscreen" value="false"/>
-  <preference name="WindowsStorePublisherName" value="My Name"/>
-  <preference name="WindowsStoreIdentityName" value="a51e5c64-d3c6-92fc-4aa9-c824fb19aef1"/>
   <preference name="FadeSplashScreenDuration" value="250"/>
   <platform name="ios">
     <config-file platform="ios" parent="CFBundleLocalizations" target="*-Info.plist">
@@ -99,4 +97,7 @@
   <platform name="chrome">
     <icon src="/platforms/chrome/icon.png" width="128" height="128"/>
   </platform>
+  <preference name="ios-XCBuildConfiguration-TARGETED_DEVICE_FAMILY" value="1,2"/>
+  <preference name="WindowsStorePublisherName" value="My Name"/>
+  <preference name="WindowsStoreIdentityName" value="2786010f-470e-6e4b-2332-87eb92b3a54c"/>
 </widget>

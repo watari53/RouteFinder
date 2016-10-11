@@ -18,6 +18,7 @@
         var app = angular.module('routeSearchApp', ['onsen'])
         
         var $host= "http://workshops.ddns.net"
+        var canvas_num = 0; // use google map uniq id in RouteDetail
         var AlbumsArrayKey = {
                 ID: 0,
                 TITLE : 1,
@@ -112,15 +113,15 @@
             console.log("in route list page");
             var options = $scope.myNavigator.getCurrentPage().options;
             var selected_tags= options.selected_tags;
-            console.log(selected_tags);
+            console.log("selected tag: " + selected_tags);
             var routeList = [];
     
             /* get sample route data
             $http.get("sample_data.json").then(function(response){
-                routeList.push(response.data.routeData);
+                routeList = response.data.routeData;
                 $scope.routeList = routeList;
-            }); */   
-            
+            });   
+            */
             var get_routes_url= $host + "/api/v1/routes/index?tags=" + selected_tags;
             console.log("route list url: " + get_routes_url);
             $.ajax({
@@ -130,9 +131,7 @@
                 async: false,
                 success: function(data) {
                     console.log("success get route index");
-                    for(var i=0; i < data.length; i++) {
-                        routeList.push(data[i]);
-                    }
+                    routeList = data;
                 },
                 error: function(data) {
                     alert("電波がいいところで試してください");
@@ -140,7 +139,6 @@
                 }
             });            
             console.log("route num is: " + routeList.length);
-            
             $scope.routeListDelegate = {
               countItems: function() {
                 // Return number of items.
@@ -156,7 +154,6 @@
                 // console.log("initialize scope route title: " + routeList[index].title);
                 // Initialize scope
                 itemScope.route= routeList[index];
-                
               },
         
               destroyItemScope: function(index, itemScope) {
@@ -173,16 +170,19 @@
             };
         })
         .controller('RouteDetailController', function($scope, $http, SharedMethod) {
-            // picture list srray number
-            $scope.AlbumsArrayKey = AlbumsArrayKey;
+            console.log("init RouteDetailController");
+            $scope.AlbumsArrayKey = AlbumsArrayKey; // AlbumsArrayKey is key number picture list array define global
             var options = $scope.myNavigator.getCurrentPage().options;
             var route_id = options.route_id;
-            var related_routeList = [];
+            $scope.route_id = route_id; //use map id
+            var related_routeList;  //array
 
             /* read route detail data
             $http.get("sample_data.json").then(function(response){
-                $scope.DetailData= response.data.routeDetail;                
-            });
+                console.log("get sample route Detail data");
+                routeDetail = response.data.routeDetail;
+                $scope.DetailData = routeDetail;
+            });   
             */
             var get_routes_detail_url = $host + "/api/v1/routes/show?id=" + route_id;
             console.log("route detail url : " + get_routes_detail_url);
@@ -211,21 +211,21 @@
             //initialize google map
             console.log("map initialize");
             var map;
-            $(function() {
-                $('#map_tab').one('click', function () {
-                    console.log("click");
-                    connectingModal.show();
-                    console.log(1);
-                    $("#map-img").addClass('nodisp');
-                    $("#map-area").removeClass('nodisp');                        
-                    createMap();
-                    createRoute($scope.DetailData.album_list);
-                });
-            });
+            var canvas_id = 'map_canvas' + canvas_num;
+            canvas_num = canvas_num + 1;
+            $scope.canvas_id = canvas_id;
+            $scope.initMap = function() {
+                connectingModal.show();
+                console.log("initMap");
+                $(".map-img").addClass('nodisp');
+                $(".map-area").removeClass('nodisp');                        
+                createMap(canvas_id);
+                createRoute($scope.DetailData.album_list);                
+            }
 
             /* get related route data
             $http.get("sample_data.json").then(function(response){
-                related_routeList.push(response.data.routeData);
+                $scope.related_routeList = response.data.routeData;
             });
             */
             var get_related_routes_url= $host + "/api/v1/routes/related?route_id=" + $scope.DetailData.id;
@@ -236,49 +236,45 @@
                 async: false,
                 success: function(data) {
                     console.log("success get route index");
-                    for(var i=0; i < data.length; i++) {
-                        related_routeList.push(data[i]);
-                    }
+                    $scope.related_routeList = data;
                 },
                 error: function(data) {
                     alert("電波がいいところで試してください");
                     connectingModal.hide();
                 }
             });
-            $scope.related_routeList = related_routeList;
 
             $scope.showRouteDetail = function(route_id) {
                 SharedMethod.showModal();
                 SharedMethod.showRouteDetail(route_id); 
             };
     
-            $scope.showPictureDetail = function(album_id) {
+            $scope.showAlbumDetail = function(album_id) {
                 SharedMethod.showModal();
-                console.log("show album detail");
-                console.log("album_id: " + album_id);
-                myNavigator.pushPage('picture_detail.html', {album_id: album_id});
+                console.log("show album detail id: " + album_id);
+                myNavigator.pushPage('album_detail.html', {album_id: album_id});
             } 
-
         })
-        .controller('PictureDetailController', function($scope, $http, SharedMethod) {
-            console.log("picture detail controller");
+        .controller('AlbumDetailController', function($scope, $http, SharedMethod) {
+            console.log("album detail controller");
             var options = $scope.myNavigator.getCurrentPage().options;
             var album_id = options.album_id;            
             
-            // get picture detail data
-            // $http.get("sample_data.json").then(function(response){
-            //     $scope.pictureData = response.data.picture;
-            // });
-            var get_picture_detail_url = $host + "/api/v1/albums/show?id=" + album_id;
-            console.log("get picture detail url: url=" + get_picture_detail_url);
+            /* get spot detail sample
+            $http.get("sample_data.json").then(function(response){
+                $scope.albumData = response.data.album;
+            });
+            */
+            var get_album_detail_url = $host + "/api/v1/albums/show?id=" + album_id;
+            console.log("get album detail url: url=" + get_album_detail_url);
             $.ajax({
-                url: get_picture_detail_url,
+                url: get_album_detail_url,
                 type: "GET",
                 dataType: "json",
                 async: false,
                 success: function(data) {
                     console.log(data.title + ": id=" + data.album_id);
-                    $scope.pictureData = data;
+                    $scope.albumData = data;
                 },
                 error: function(data) {
                     alert("電波がいいところで試してください");
@@ -287,22 +283,22 @@
 
             $(function() {
                 //コンテンツの切り替え
-                $("#picture-menu-tab ons-col").click(function() {
-                    var num = $("#picture-menu-tab ons-col").index(this);
+                $("#album-menu-tab ons-col").click(function() {
+                    var num = $("#album-menu-tab ons-col").index(this);
                     console.log("tab num="+num);   
                     $(".p-content_wrap").addClass('nodisp');
                     $(".p-content_wrap").eq(num).removeClass('nodisp');
-                    $("#picture-menu-tab ons-col").removeClass('selected');
+                    $("#album-menu-tab ons-col").removeClass('selected');
                     $(this).addClass('selected')
                 });
                 
-                //関連写真の取得
                 var related_pictures = [];
-                /* $http.get("sample_data.json").then(function(response){
+                /* get spot pictures
+                $http.get("sample_data.json").then(function(response){
                     related_pictures = response.data.related_pictures;
-                    $scope.related_pictures = related_pictures;
-                }); */
-                var get_related_pictures_url = $host + "/api/v1/pictures/search?album_id=" + $scope.pictureData.album_id;
+                });
+                */
+                var get_related_pictures_url = $host + "/api/v1/pictures/search?album_id=" + album_id;
                 console.log("get related picture: url=" + get_related_pictures_url);
                 $.ajax({
                     url: get_related_pictures_url,
@@ -310,9 +306,7 @@
                     dataType: "json",
                     async: false,
                     success: function(data) {
-                        for (var i=0; i < data.length; i++) {
-                            related_pictures.push(data[i]);
-                        }
+                        related_pictures = data;
                     },
                     error: function(data) {
                         alert("電波がいいところで試してください");
@@ -325,9 +319,11 @@
                 });
                 
                 var related_routes = [];
-                // $http.get("sample_data.json").then(function(response){
-                //     $scope.related_pictures = response.data.routeData;
-                // });
+                /* get related routes
+                $http.get("sample_data.json").then(function(response){
+                    related_routes = response.data.routeData;
+                });
+                */
                 var get_related_routes_url = $host + "/api/v1/routes/related?album_id=" + album_id;
                 console.log("get related route: url=" + get_related_routes_url);
                 $.ajax({
@@ -336,9 +332,7 @@
                     dataType: "json",
                     async: false,
                     success: function(data) {
-                        for (var i=0; i < data.length; i++) {
-                            related_routes.push(data[i]);
-                        }
+                        related_routes = data;
                     },
                     error: function(data) {
                         alert("電波がいいところで試してください");
@@ -356,8 +350,12 @@
                     SharedMethod.showRouteDetail(route_id); 
                 };                
 
-            
-                var user_comments = [];
+                var spot_user_comments = [];
+                /* get spot user comments
+                $http.get("sample_data.json").then(function(response){
+                    spot_user_comments = response.data.spotUserComments;
+                });
+                */
                 var get_user_comments_url = $host + '/api/v1/albums/get_comments?album_id=' + album_id;
                 console.log('get users comments this place: url=' + get_user_comments_url);
                 $.ajax({
@@ -366,18 +364,16 @@
                     dataType: "json",
                     async: false,
                     success: function(data) {
-                        for (var i=0; i < data.length; i++) {
-                            user_comments.push(data[i]);
-                        }
+                        spot_user_comments = data;
                     },
                     error: function(data) {
                         alert("電波がいいところで試してください");
                     }
                 });
-                $scope.user_comments_length = user_comments.length;
+                $scope.user_comments_length = spot_user_comments.length;
                 
                 $('#user-comments').one('click', function() {
-                    $scope.user_comments = user_comments;
+                    $scope.user_comments = spot_user_comments;
                     $scope.$apply();
                 });
             });

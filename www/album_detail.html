@@ -1,13 +1,13 @@
 <link rel="stylesheet" href="css/picture_detail.css">
 
-<ons-page ng-controller='PictureDetailController'>
+<ons-page ng-controller='AlbumDetailController'>
 
     <ons-toolbar>
         <div class="left"><ons-back-button>Back</ons-back-button></div>
-        <div class="center">{{pictureData.title}}</div>
+        <div class="center">{{albumData.title}}</div>
     </ons-toolbar>
 
-        <img class="card" src="{{pictureData.img_url}}">
+        <img class="card" src="{{albumData.img_url}}">
         <div class="rating"><div class="rating-num">
             <ons-icon icon="fa-star" fixed-width="false"></ons-icon>
             <ons-icon icon="fa-star" fixed-width="false"></ons-icon>
@@ -17,7 +17,7 @@
             4.5
         </div></div>
 
-        <ons-list id="picture-menu-tab" style="border-top: none"><ons-list-item style="line-height: 1; padding: 0;">
+        <ons-list id="album-menu-tab" style="border-top: none"><ons-list-item style="line-height: 1; padding: 0;">
           <ons-row class="action">
 
             <ons-col class="action-col selected">
@@ -49,21 +49,21 @@
               <ons-list-item modifier="chevron">
                 <div class="prop-desc">
                   <ons-icon icon="ion-calendar"></ons-icon>
-                  {{pictureData.date}}
+                  {{albumData.date}}
                 </div>
               </ons-list-item>
     
               <ons-list-item modifier="chevron">
                 <div class="prop-desc">
                   <ons-icon icon="fa-map-marker"></ons-icon>
-                  {{pictureData.address_full_text}}
+                  {{albumData.address_full_text}}
                 </div>
               </ons-list-item>
 
               <ons-list-item modifier="chevron">
                 <div class="prop-desc">
                   <ons-icon icon="fa-book"></ons-icon>
-                  {{pictureData.description}}
+                  {{albumData.description}}
                 </div>
               </ons-list-item>
             </ons-list>
@@ -155,7 +155,7 @@
                     <div class="timeline-date">{{comment.date}}</div>
                     <div class="timline-from">
                       <span class="timeline-name">{{comment.name}}</span>
-                      <a href={{comment.link}} style="color:#0000ff;text-decoration:none;">
+                      <a href="#" style="color:#0000ff;text-decoration:none;">
                           <span class="timeline-id">@{{comment.full_name}}</span>
                       </a>
                     </div>
