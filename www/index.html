@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: https://ssl.gstatic.com; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
     <script src="components/loader.js"></script>
     <link rel="stylesheet" href="components/loader.css">
     <link rel="stylesheet" href="css/style.css">
@@ -17,7 +17,7 @@
         // ons.bootstrap();
         var app = angular.module('routeSearchApp', ['onsen'])
         
-        var $host= "http://workshops.ddns.net"
+        var $host= "http://zekkeitrip.0t0.jp"
         var canvas_num = 0; // use google map uniq id in RouteDetail
         var AlbumsArrayKey = {
                 ID: 0,
@@ -116,28 +116,27 @@
             console.log("selected tag: " + selected_tags);
             var routeList = [];
     
-            /* get sample route data
+            /* get sample route data */
             $http.get("sample_data.json").then(function(response){
                 routeList = response.data.routeData;
                 $scope.routeList = routeList;
             });   
-            */
-            var get_routes_url= $host + "/api/v1/routes/index?tags=" + selected_tags;
-            console.log("route list url: " + get_routes_url);
-            $.ajax({
-                url: get_routes_url,
-                type: "GET",
-                dataType: "json",
-                async: false,
-                success: function(data) {
-                    console.log("success get route index");
-                    routeList = data;
-                },
-                error: function(data) {
-                    alert("電波がいいところで試してください");
-                    connectingModal.hide();
-                }
-            });            
+            // var get_routes_url= $host + "/api/v1/routes/index?tags=" + selected_tags;
+            // console.log("route list url: " + get_routes_url);
+            // $.ajax({
+            //     url: get_routes_url,
+            //     type: "GET",
+            //     dataType: "json",
+            //     async: false,
+            //     success: function(data) {
+            //         console.log("success get route index");
+            //         routeList = data;
+            //     },
+            //     error: function(data) {
+            //         alert("電波がいいところで試してください");
+            //         connectingModal.hide();
+            //     }
+            // }); 
             console.log("route num is: " + routeList.length);
             $scope.routeListDelegate = {
               countItems: function() {
@@ -177,28 +176,27 @@
             $scope.route_id = route_id; //use map id
             var related_routeList;  //array
 
-            /* read route detail data
+            /* read route detail data */
             $http.get("sample_data.json").then(function(response){
                 console.log("get sample route Detail data");
                 routeDetail = response.data.routeDetail;
                 $scope.DetailData = routeDetail;
             });   
-            */
-            var get_routes_detail_url = $host + "/api/v1/routes/show?id=" + route_id;
-            console.log("route detail url : " + get_routes_detail_url);
-            $.ajax({
-                url: get_routes_detail_url,
-                type: "GET",
-                dataType: "json",
-                async: false,
-                success: function(data) {
-                    console.log(data);
-                    $scope.DetailData = data;
-                },
-                error: function(data) {
-                    alert("電波がいいところで試してください");
-                }
-            });
+            // var get_routes_detail_url = $host + "/api/v1/routes/show?id=" + route_id;
+            // console.log("route detail url : " + get_routes_detail_url);
+            // $.ajax({
+            //     url: get_routes_detail_url,
+            //     type: "GET",
+            //     dataType: "json",
+            //     async: false,
+            //     success: function(data) {
+            //         console.log(data);
+            //         $scope.DetailData = data;
+            //     },
+            //     error: function(data) {
+            //         alert("電波がいいところで試してください");
+            //     }
+            // });
 
             //initialize sortable TimeLine
             console.log("initialize timeline")
@@ -223,26 +221,25 @@
                 createRoute($scope.DetailData.album_list);                
             }
 
-            /* get related route data
+            /* get related route data */
             $http.get("sample_data.json").then(function(response){
                 $scope.related_routeList = response.data.routeData;
             });
-            */
-            var get_related_routes_url= $host + "/api/v1/routes/related?route_id=" + $scope.DetailData.id;
-            $.ajax({
-                url: get_related_routes_url,
-                type: "GET",
-                dataType: "json",
-                async: false,
-                success: function(data) {
-                    console.log("success get route index");
-                    $scope.related_routeList = data;
-                },
-                error: function(data) {
-                    alert("電波がいいところで試してください");
-                    connectingModal.hide();
-                }
-            });
+            // var get_related_routes_url= $host + "/api/v1/routes/related?route_id=" + $scope.DetailData.id;
+            // $.ajax({
+            //     url: get_related_routes_url,
+            //     type: "GET",
+            //     dataType: "json",
+            //     async: false,
+            //     success: function(data) {
+            //         console.log("success get route index");
+            //         $scope.related_routeList = data;
+            //     },
+            //     error: function(data) {
+            //         alert("電波がいいところで試してください");
+            //         connectingModal.hide();
+            //     }
+            // });
 
             $scope.showRouteDetail = function(route_id) {
                 SharedMethod.showModal();
@@ -260,26 +257,25 @@
             var options = $scope.myNavigator.getCurrentPage().options;
             var album_id = options.album_id;            
             
-            /* get spot detail sample
+            /* get spot detail sample */
             $http.get("sample_data.json").then(function(response){
                 $scope.albumData = response.data.album;
             });
-            */
-            var get_album_detail_url = $host + "/api/v1/albums/show?id=" + album_id;
-            console.log("get album detail url: url=" + get_album_detail_url);
-            $.ajax({
-                url: get_album_detail_url,
-                type: "GET",
-                dataType: "json",
-                async: false,
-                success: function(data) {
-                    console.log(data.title + ": id=" + data.album_id);
-                    $scope.albumData = data;
-                },
-                error: function(data) {
-                    alert("電波がいいところで試してください");
-                }
-            });
+            // var get_album_detail_url = $host + "/api/v1/albums/show?id=" + album_id;
+            // console.log("get album detail url: url=" + get_album_detail_url);
+            // $.ajax({
+            //     url: get_album_detail_url,
+            //     type: "GET",
+            //     dataType: "json",
+            //     async: false,
+            //     success: function(data) {
+            //         console.log(data.title + ": id=" + data.album_id);
+            //         $scope.albumData = data;
+            //     },
+            //     error: function(data) {
+            //         alert("電波がいいところで試してください");
+            //     }
+            // });
 
             $(function() {
                 //コンテンツの切り替え
@@ -319,25 +315,24 @@
                 });
                 
                 var related_routes = [];
-                /* get related routes
+                /* get related routes */
                 $http.get("sample_data.json").then(function(response){
                     related_routes = response.data.routeData;
                 });
-                */
-                var get_related_routes_url = $host + "/api/v1/routes/related?album_id=" + album_id;
-                console.log("get related route: url=" + get_related_routes_url);
-                $.ajax({
-                    url: get_related_routes_url,
-                    type: "GET",
-                    dataType: "json",
-                    async: false,
-                    success: function(data) {
-                        related_routes = data;
-                    },
-                    error: function(data) {
-                        alert("電波がいいところで試してください");
-                    }
-                });
+                // var get_related_routes_url = $host + "/api/v1/routes/related?album_id=" + album_id;
+                // console.log("get related route: url=" + get_related_routes_url);
+                // $.ajax({
+                //     url: get_related_routes_url,
+                //     type: "GET",
+                //     dataType: "json",
+                //     async: false,
+                //     success: function(data) {
+                //         related_routes = data;
+                //     },
+                //     error: function(data) {
+                //         alert("電波がいいところで試してください");
+                //     }
+                // });
                 $scope.related_routes_length = related_routes.length;
                 $('#related-routes').one('click', function() {
                     $scope.related_routes= related_routes;
@@ -351,25 +346,24 @@
                 };                
 
                 var spot_user_comments = [];
-                /* get spot user comments
+                /* get spot user comments */
                 $http.get("sample_data.json").then(function(response){
                     spot_user_comments = response.data.spotUserComments;
                 });
-                */
-                var get_user_comments_url = $host + '/api/v1/albums/get_comments?album_id=' + album_id;
-                console.log('get users comments this place: url=' + get_user_comments_url);
-                $.ajax({
-                    url: get_user_comments_url,
-                    type: "GET",
-                    dataType: "json",
-                    async: false,
-                    success: function(data) {
-                        spot_user_comments = data;
-                    },
-                    error: function(data) {
-                        alert("電波がいいところで試してください");
-                    }
-                });
+                // var get_user_comments_url = $host + '/api/v1/albums/get_comments?album_id=' + album_id;
+                // console.log('get users comments this place: url=' + get_user_comments_url);
+                // $.ajax({
+                //     url: get_user_comments_url,
+                //     type: "GET",
+                //     dataType: "json",
+                //     async: false,
+                //     success: function(data) {
+                //         spot_user_comments = data;
+                //     },
+                //     error: function(data) {
+                //         alert("電波がいいところで試してください");
+                //     }
+                // });
                 $scope.user_comments_length = spot_user_comments.length;
                 
                 $('#user-comments').one('click', function() {
